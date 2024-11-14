@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carteira</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh; /* Define altura mínima para o corpo */
+            overflow-y: auto; /* Permite rolagem vertical */
+        }
+        .container {
+            padding: 20px;
+            padding-bottom: 80px; /* Deixa espaço para o menu inferior */
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .balance {
+            font-size: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .balance span {
+            font-size: 16px;
+            color: #7e7e7e;
+        }
+        .coins {
+            margin-top: 20px;
+        }
+        .coin {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+        .coin img {
+            width: 24px;
+            margin-right: 10px;
+        }
+        .coin div {
+            display: flex;
+            align-items: center;
+        }
+        .coin .name {
+            font-size: 18px;
+        }
+        .coin .amount {
+            font-size: 18px;
+        }
+        .add-balance {
+            background-color: #1B1A1A;
+            padding: 15px;
+            text-align: center;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        .add-balance button {
+            background-color: #3d3d3d;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        /* Estilo para o botão de enviar saldo */
+        .send-balance, .receive-balance, .view-history {
+            background-color: #1E90FF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-right: 10px; /* Espaço entre os botões */
+        }
+
+        /* Estilo para o modal de envio de saldo */
+        .modal {
+            display: none; /* Inicialmente oculto */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal-content input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+        .modal-content button {
+            background-color: #1E90FF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Menu inferior */
+        .menu {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: black;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #333;
+        }
+        .menu-item {
+            text-align: center;
+            color: white;
+        }
+        .menu-item img {
+            width: 45px;
+            margin-bottom: -5px;
+        }
+        .menu-item span {
+            display: block;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">Carteira</div>
+
+    <div class="balance">
+        <div id="balanceValue">0,00 R$</div>
+        <button style="background-color: black; color: white;" onclick="window.location.href='id-1002/depósito.html';">Depósito</button>
+    </div>
+    <span>Valor total estimado</span>
+
+    <div class="coins">
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png" alt="BNB">
+                <div class="name">0,00 BNB</div>
+            </div>
+            <div class="amount">BNB</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="BTC">
+                <div class="name">0,00 BTC</div>
+            </div>
+            <div class="amount">Bitcoin</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/dogecoin-doge-logo.png" alt="DOGE">
+                <div class="name">0,00 DOGE</div>
+            </div>
+            <div class="amount">Doge Coin</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH">
+                <div class="name">0,00 ETH</div>
+            </div>
+            <div class="amount">Ethereum</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/tron-trx-logo.png" alt="TRX">
+                <div class="name">0,00 TRX</div>
+            </div>
+            <div class="amount">Tron</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="USDC">
+                <div class="name">0,00 USDC</div>
+            </div>
+            <div class="amount">USD Coin</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT">
+                <div class="name">0,00 USDT</div>
+            </div>
+            <div class="amount">Tether</div>
+        </div>
+        <div class="coin">
+            <div>
+                <img src="img-vds-aud/Rinix_Cash_RfStudio_1.png" alt="PTS">
+                <div class="name">0.00 RN</div>
+            </div>
+            <div class="amount">Rinix Coin</div>
+        </div>
+    </div>
+
+    <div class="add-balance">
+        <button onclick="window.location.href='id-1002/enviar-saldo.html';">Enviar Saldo</button>
+        <button onclick="openReceiveModal()">Receber Saldo</button>
+    </div>
+    <button style=" color: white; background-color: black;" onclick="openHistoryModal()">Ver Histórico</button>
+    
+    <div class="modal" id="receiveModal">
+        <div class="modal-content">
+            <h3>Receber Saldo</h3>
+            <p>Endereço de recebimento: <span id="receiveAddress">RfStudio.32.20.08.rf</span></p>
+            <button onclick="closeReceiveModal()">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <h3>Histórico de Transações</h3>
+            <div class="transaction-history">
+                <div>RfStudio LTDE te enviou: 0.000000001 RN</div>
+                
+            </div>
+            <button onclick="closeHistoryModal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Menu inferior -->
+<div class="menu">
+    <div class="menu-item" onclick="window.location.href='id-1002/converter.html'">
+        <img src="img-vds-aud/cart.jpg" alt="Home">
+        <span>Converter</span>
+    </div>
+    
+    <div class="menu-item" onclick="window.location.href='id-1002/miner-rinix.html'">
+        <img src="img-vds-aud/miner.jpg" alt="Carteira">
+        <span>Minerar</span>
+    </div>
+    
+    <div class="menu-item" onclick="window.location.href='id-1002/gráfico-rinix.html'">
+        <img src="img-vds-aud/graft.jpg" alt="Home">
+        <span>Graft</span>
+    </div>
+
+    <div class="menu-item" onclick="window.location.href='...'">
+        <img src="img-vds-aud/trs.jpg" alt="Configurações">
+        <span>beta</span>
+    </div>
+</div>
+
+<script>
+    function openReceiveModal() {
+        document.getElementById('receiveModal').style.display = 'flex';
+    }
+
+    function closeReceiveModal() {
+        document.getElementById('receiveModal').style.display = 'none';
+    }
+
+    function openHistoryModal() {
+        document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModal').style.display = 'none';
+    }
+
+    window.onload = function() {
+        const currentUserEmail = "admin@gmail.com"; // E-mail predefinido
+
+        fetch('https://raw.githubusercontent.com/referees3/Sever/refs/heads/main/rits.json')
+            .then(response => response.json())
+            .then(data => {
+                const userData = data.usuarios.find(user => user.email === currentUserEmail);
+
+                if (userData) {
+                    document.getElementById('balanceValue').textContent = userData.total_balance;
+
+                    const coins = userData.coins;
+                    document.querySelectorAll('.coin').forEach((coinElement) => {
+                        const coinName = coinElement.querySelector('.amount').textContent.trim();
+                        if (coins[coinName]) {
+                            coinElement.querySelector('.name').textContent = coins[coinName];
+                        }
+                    });
+                } else {
+                    console.log("Usuário não encontrado.");
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar o arquivo de saldos:', error);
+            });
+    };
+</script>
+</body>
+</html>
+

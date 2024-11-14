@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Carteira de Criptomoedas</title>
+    <style>
+        /* Fundo e alinhamento da página */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #007bff, #00f2fe);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+            overflow: hidden;
+        }
+
+        /* Estilos do formulário */
+        .login-form {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #007bff;
+            font-size: 1.8em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: box-shadow 0.3s, border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+        }
+
+        .error-message {
+            color: #e63946;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .link-container {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #007bff;
+        }
+
+        .link-container a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 8px;
+            transition: color 0.3s;
+        }
+
+        .link-container a:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        /* Efeito de animação */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 400px) {
+            .login-form {
+                padding: 20px;
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-form">
+        <h1>Bem-vindo de volta!</h1>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" placeholder="Digite sua senha" required>
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+        <p class="error-message" id="error-message"></p>
+        <p>Não continue sem antes ler os termos.</p>
+        <div class="link-container">
+            <a href="id-1002/create_account.html">Criar Conta</a> |
+            <a href="id-1002/recover_password.html">Recuperar Senha</a> |
+            <a href="id-1002/termo-licença.txt">Termo, licença</a>
+        </div>
+    </div>
+
+    <script>
+        let users = [];
+
+        // Carregar usuários do arquivo JSON
+        fetch('rits.json')
+            .then(response => response.json())
+            .then(data => {
+                users = data.usuarios;
+            })
+            .catch(error => console.error('Erro ao carregar o arquivo JSON:', error));
+
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+
+            // Verificar se o e-mail e a senha estão corretos
+            const user = users.find(user => user.email === email && user.senha === password);
+
+            if (user) {
+                // Login bem-sucedido
+                alert('Login bem-sucedido!');
+                // Redirecionar para a página específica do usuário
+                window.location.href = user.redirect;
+            } else {
+                errorMessage.textContent = 'E-mail ou senha incorretos. Tente novamente.';
+            }
+        });
+    </script>
+</body>
+</html>
