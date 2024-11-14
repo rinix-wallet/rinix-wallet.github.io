@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico Financeiro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gráfico ocupando toda a tela */
+        canvas {
+            width: 100%;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        /* Rodapé */
+        .footer {
+            text-align: center;
+            color: #ffffff;
+            font-size: 14px;
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            z-index: 2;
+        }
+
+        /* Título do gráfico */
+        .title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            color: #7F8089;
+            font-weight: 700;
+            z-index: 2;
+        }
+
+        /* Indicador de porcentagem */
+        .percentage {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.8rem;
+            color: white;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        /* Valor predefinido */
+        .predefined-value {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 1.5rem;
+            color: #ffcc00;
+            font-weight: 0.4rem;
+            opacity: 0.4;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Gráfico</div>
+    <div class="percentage" id="percentage">0% 🔺️</div>
+    <canvas id="lineChart"></canvas>
+    <div class="footer">Cotação Rinix | 2024</div>
+    <div class="predefined-value" id="predefinedValue">R$ -</div>
+
+<script>
+  const canvas = document.getElementById('lineChart');
+  const ctx = canvas.getContext('2d');
+
+  // Ajustando as dimensões do canvas para preencher toda a tela
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Dados iniciais aleatórios
+  let data = Array.from({ length: 10 }, () => 50 + (Math.random() - 0.5) * 100);
+
+  // Valores predefinidos para exibir no canto inferior direito a cada 30 segundos
+  const predefinedValues = [
+      "R$ 0.00 vd", "RN 0.00 vd", "BTC 0.00 vd"
+  ];
+
+  const maxCandles = 50;
+  const minPercentage = 5;
+  const maxPercentage = 5;
+  let percentage = 0;
+
+  // Função para gerar preços aleatórios
+  function generateRandomPrice() {
+    const lastPrice = data[data.length - 1];
+    const change = (Math.random() - 0.5) * 50;
+    return lastPrice + change;
+  }
+
+  // Função para desenhar o gráfico de linha
+  function drawLineChart() {
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+    const padding = 30;
+
+    const maxPrice = Math.max(...data);
+    const minPrice = Math.min(...data);
+    const priceRange = maxPrice - minPrice;
+
+    const xInterval = (canvasWidth - 2 * padding) / (data.length - 1);
+    const yScale = (canvasHeight - 2 * padding) / priceRange;
+
+    ctx.beginPath();
+    ctx.moveTo(padding, canvasHeight - padding - (data[0] - minPrice) * yScale);
+
+    data.forEach((price, index) => {
+      const x = padding + index * xInterval;
+      const y = canvasHeight - padding - (price - minPrice) * yScale;
+      ctx.lineTo(x, y);
+    });
+
+    ctx.strokeStyle = '#ff00ff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    data.forEach((price, index) => {
+      const x = padding + index * xInterval;
+      const y = canvasHeight - padding - (price - minPrice) * yScale;
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+    });
+  }
+
+  function updateChart() {
+    data.push(generateRandomPrice());
+
+    if (data.length > maxCandles) {
+      data.shift();
+    }
+
+    percentage = Math.random() * (maxPercentage - minPercentage) + minPercentage;
+    document.getElementById('percentage').textContent = `${Math.round(percentage)}% ${Math.random() > 0.5 ? '🔺️' : '🔻'}`;
+
+    drawLineChart();
+  }
+
+  // Exibir valor predefinido aleatório no canto inferior direito a cada 30 segundos
+  function updatePredefinedValue() {
+    const randomValue = predefinedValues[Math.floor(Math.random() * predefinedValues.length)];
+    document.getElementById('predefinedValue').textContent = randomValue;
+  }
+
+  setInterval(updateChart, 1000);
+  setInterval(updatePredefinedValue, 30000);
+
+  drawLineChart();
+</script>
+</body>
+</html>

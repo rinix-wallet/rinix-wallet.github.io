@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depósito</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+        .header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .account-info {
+            font-size: 14px;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .input-box {
+            background-color: #2b2b2b;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+        }
+        .input-box label {
+            font-size: 14px;
+            color: #a0a0a0;
+        }
+        .input-box span {
+            font-size: 18px;
+            color: #ffffff;
+        }
+        .text-input {
+            background-color: #2b2b2b;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            max-width: 350px;
+            font-size: 16px;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .dropdown div {
+            padding: 10px;
+            font-size: 16px;
+            color: #ffffff;
+            cursor: pointer;
+        }
+        .dropdown div:hover {
+            background-color: #444;
+        }
+        .next-button {
+            background-color: #00e676;
+            color: #000000;
+            font-weight: bold;
+            padding: 15px;
+            width: 100%;
+            max-width: 350px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .next-button:hover {
+            background-color: #00c767;
+        }
+        .promo-code-input {
+            background-color: #2b2b2b;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 15px;
+            width: 100%;
+            max-width: 350px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .promo-code-input::placeholder {
+            color: #a0a0a0;
+        }
+        .security-info {
+            font-size: 12px;
+            color: #a0a0a0;
+            margin-top: 20px;
+            text-align: center;
+            max-width: 350px;
+        }
+        .lock-icon {
+            font-size: 24px;
+            color: #00e676;
+        }
+        .confirmation-image {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .confirmation-image img {
+            max-width: 300px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Depósito</div>
+    <div class="account-info">RfStudio BRL No.7</div>
+
+    <!-- Valor do depósito com menu suspenso -->
+    <div class="input-box" onclick="toggleDepositDropdown()">
+        <label>Valor do depósito</label>
+        <span id="depositValue">BRL 150</span>
+        <div class="dropdown" id="depositDropdown">
+            <div onclick="selectDepositValue(2)">BRL 2</div>
+            <div onclick="selectDepositValue(5)">BRL 5</div>
+            <div onclick="selectDepositValue(10)">BRL 10</div>
+            <div onclick="selectDepositValue(50)">BRL 50</div>
+            <div onclick="selectDepositValue(100)">BRL 100</div>
+        </div>
+    </div>
+
+    <!-- Método de pagamento com menu suspenso -->
+    <div class="input-box" onclick="togglePaymentDropdown()">
+        <label>Método de pagamento</label>
+        <span id="paymentMethod">Pix</span>
+        <div class="dropdown" id="paymentDropdown">
+            <div onclick="selectPaymentMethod('Pix')">Pix</div>
+            <div onclick="selectPaymentMethod('Boleto')">Boleto</div>
+        </div>
+    </div>
+
+    <!-- Nome do usuário do Pix remetente -->
+    <input type="text" class="text-input" placeholder="Nome do usuário do Pix remetente">
+
+    <!-- Nome de usuário ou ID da carteira -->
+    <input type="text" class="text-input" placeholder="Nome de usuário ou ID da carteira">
+
+    <!-- Data do depósito -->
+    <input type="date" class="text-input" placeholder="Data do depósito">
+
+    <!-- Código promocional -->
+    <input type="text" class="promo-code-input" placeholder="Digite seu código promocional">
+
+    <!-- Botão Próximo -->
+    <button class="next-button" onclick="showConfirmationImage()">Próximo</button>
+
+    <!-- Imagem de Confirmação -->
+    <div class="confirmation-image" id="confirmationImage">
+        <p>Por favor, Pague o Valor do depósito e confirme para enviar seus dados:</p>
+        <img src="Pix.jpg" alt="Imagem de Confirmação">
+        <p>Chave - Rfpdssuporte@gmail.com</p>
+        <button class="next-button" onclick="sendEmail()">Confirmar e Enviar</button>
+    </div>
+
+    <div class="security-info">
+        <div class="lock-icon">🔒</div>
+        Seus dados são criptografados usando certificados SSL de 256 bits, fornecendo a você a maior segurança disponível.
+    </div>
+
+<script>
+    function toggleDepositDropdown() {
+        const dropdown = document.getElementById("depositDropdown");
+        dropdown.style.display = dropdown.style.display === "none" || dropdown.style.display === "" ? "block" : "none";
+    }
+
+    function selectDepositValue(amount) {
+        document.getElementById("depositValue").textContent = "BRL " + amount;
+        toggleDepositDropdown();
+    }
+
+    function togglePaymentDropdown() {
+        const dropdown = document.getElementById("paymentDropdown");
+        dropdown.style.display = dropdown.style.display === "none" || dropdown.style.display === "" ? "block" : "none";
+    }
+
+    function selectPaymentMethod(method) {
+        document.getElementById("paymentMethod").textContent = method;
+        togglePaymentDropdown();
+    }
+
+    // Exibe a imagem de confirmação
+    function showConfirmationImage() {
+        document.getElementById("confirmationImage").style.display = "block";
+    }
+
+    // Função para enviar dados por e-mail usando mailto
+    function sendEmail() {
+        const depositValue = document.getElementById("depositValue").textContent;
+        const paymentMethod = document.getElementById("paymentMethod").textContent;
+        const pixUser = document.querySelector('input[placeholder="Nome do usuário do Pix remetente"]').value;
+        const walletId = document.querySelector('input[placeholder="Nome de usuário ou ID da carteira"]').value;
+        const depositDate = document.querySelector('input[type="date"]').value;
+        const promoCode = document.querySelector('.promo-code-input').value;
+
+        // Construção do corpo do e-mail com os dados
+        const emailBody = `
+            Depósito: ${depositValue}
+            Método de pagamento: ${paymentMethod}
+            Nome do usuário do Pix remetente: ${pixUser}
+            Nome de usuário ou ID da carteira: ${walletId}
+            Data do depósito: ${depositDate}
+            Código promocional: ${promoCode ? promoCode : "Não fornecido"}
+        `;
+
+        // Codificando os dados para a URL do mailto
+        const emailLink = `mailto:rfpdssuporte@gmail.com?subject=Detalhes do Depósito&body=${encodeURIComponent(emailBody)}`;
+
+        // Redirecionando para o cliente de e-mail com os dados preenchidos
+        window.location.href = emailLink;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversão de Rinix para BRL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: black;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: #0000;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        h1 {
+            color: #00ff00;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #0056b3;
+        }
+        button {
+            background-color: #29A572;
+            color: white;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #007bff;
+        }
+        .toggle {
+            margin: 20px 0;
+        }
+        .toggle button {
+            background-color: #6c757d;
+        }
+        .toggle button:hover {
+            background-color: #5a6268;
+        }
+        .missing {
+            margin-top: 10px;
+            color: #dc3545; /* Cor vermelha para valor faltando */
+        }
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 24px;
+            }
+            button {
+                font-size: 16px;
+            }
+            input[type="number"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Converter Rinix e BRL</h1>
+        
+        <div class="toggle">
+            <button onclick="toggleConversion()">Alternar para <span id="toggleText">Rinix para BRL</span></button>
+        </div>
+
+        <input type="number" id="amount" placeholder="Digite a quantidade" step="0.000000001" />
+        <button onclick="convert()">Converter</button>
+        <div class="result" id="result"></div>
+        <div class="missing" id="missing"></div>
+    </div>
+
+    <script>
+        const conversionRate = 500 / 0.000000001; // 1 Rinix = 5 reais / 0.000000001
+        const requiredAmount = 0.000000001; // O valor necessário para 5 BRL
+
+        let convertingToBRL = true; // True: Rinix para BRL, False: BRL para Rinix
+
+        function toggleConversion() {
+            convertingToBRL = !convertingToBRL;
+            const toggleText = convertingToBRL ? "Rinix para BRL" : "BRL para Rinix";
+            document.getElementById('toggleText').innerText = toggleText;
+            document.getElementById('amount').value = ''; // Limpa o campo de entrada
+            document.getElementById('result').innerText = ''; // Limpa o resultado
+            document.getElementById('missing').innerText = ''; // Limpa o texto de valor faltando
+        }
+
+        function convert() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            let result;
+
+            if (convertingToBRL) {
+                // Rinix para BRL
+                result = amount * conversionRate;
+                document.getElementById('result').innerText = `Valor em BRL: R$ ${result.toFixed(2)}`;
+
+                // Verifica se o valor é inferior a 0.000000001
+                if (amount < requiredAmount) {
+                    const missingAmount = (requiredAmount - amount).toFixed(9);
+                    document.getElementById('missing').innerText = `Falta: ${missingAmount} Rinix para alcançar R$ 5.`;
+                } else {
+                    document.getElementById('missing').innerText = '';
+                }
+            } else {
+                // BRL para Rinix
+                result = amount * (0.000000001 / 5); // 1 real = 0.000000001 / 5 Rinix
+                document.getElementById('result').innerText = `Valor em Rinix: ${result.toFixed(9)}`;
+                document.getElementById('missing').innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>

