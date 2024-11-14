@@ -146,7 +146,7 @@
         let users = [];
 
         // Carregar usuários do arquivo JSON
-        fetch('rits.json')
+        fetch('https://raw.githubusercontent.com/referees3/Sever/refs/heads/main/rits.json')
             .then(response => response.json())
             .then(data => {
                 users = data.usuarios;
